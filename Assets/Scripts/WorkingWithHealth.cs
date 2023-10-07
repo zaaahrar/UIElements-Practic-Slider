@@ -1,41 +1,58 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(Player))]
+[RequireComponent(typeof(HealthRendering))]
 public class WorkingWithHealth : MonoBehaviour
 {
-    private int _healthVariable = 10;
+    [SerializeField] Button _buttonAddHealth;
+    [SerializeField] Button _buttonTakeHalth;
+
+    private int _stepHealth = 10;
     private float _finalHealth;
 
     private Player _player;
+    private HealthRendering _healthRendering;
 
     private void Start()
     {
         _player = GetComponent<Player>();
+        _healthRendering = GetComponent<HealthRendering>();
     }
 
-    public void AddHealth()
+    private void OnEnable()
     {
-        _finalHealth = _player.Health + _healthVariable;
-
-        if (_finalHealth <= _player.MaxHealth && _finalHealth >= _player.MinHealth)
-        {
-            StartCoroutine(_player.ChangeHealth(_finalHealth));
-        }
-        else
-            Debug.Log("Здоровье выше сотни подняться не может.");
+        _buttonAddHealth.onClick.AddListener(AddHealthOnClick);
+        _buttonTakeHalth.onClick.AddListener(TakeHealthOnClick);
     }
 
-    public void TakeHealth()
+    private void OnDisable()
     {
-        _finalHealth = _player.Health - _healthVariable;
+        _buttonAddHealth.onClick.RemoveListener(AddHealthOnClick);
+        _buttonTakeHalth.onClick.RemoveListener(TakeHealthOnClick);
+    }
 
-        if (_finalHealth <= _player.MaxHealth && _finalHealth >= _player.MinHealth)
+    public void AddHealthOnClick()
+    {
+        _finalHealth = _player.Health + _stepHealth;
+        _player.AddHealth(_stepHealth);
+
+        if (_finalHealth < _player.MaxHealth + 1)
         {
-            StartCoroutine(_player.ChangeHealth(_finalHealth));
+            StartCoroutine(_healthRendering.DrawHealth(_finalHealth));
         }
-        else
-            Debug.Log("Здоровье ниже нуля опуститься не может.");
+    }
+
+    public void TakeHealthOnClick()
+    {
+        _finalHealth = _player.Health - _stepHealth;
+        _player.TakeHealth(_stepHealth);
+
+        if (_finalHealth > _player.MinHealth - 1)
+        {
+            StartCoroutine(_healthRendering.DrawHealth(_finalHealth));
+        }
     }
 }

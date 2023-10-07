@@ -1,14 +1,13 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Events;
 
-[RequireComponent(typeof(HealthRendering))]
 public class Player : MonoBehaviour
 {
-    private float _health = 100;
+    [SerializeField] private float _health;
+
     private int _maxHealth = 100;
     private int _minHealth = 0;
-
-    private HealthRendering _healthRendering;
 
     public float Health => _health;
     public int MaxHealth => _maxHealth;
@@ -16,18 +15,23 @@ public class Player : MonoBehaviour
 
     private void Start()
     {
-        _healthRendering = GetComponent<HealthRendering>();
         _health = _maxHealth;
     }
 
-    public IEnumerator ChangeHealth(float finalHealth)
+    public void TakeHealth(int value)
     {
-        while (_health != finalHealth)
+        if (_health > _minHealth)
         {
-            _health = Mathf.MoveTowards(_health, finalHealth, 10f * Time.deltaTime);
-            _healthRendering.UpdateUIElements();
+            _health -= value;
+        }
 
-            yield return null;
+    }
+
+    public void AddHealth(int value)
+    {
+        if (_health < _maxHealth)
+        {
+            _health += value;
         }
     }
 }
