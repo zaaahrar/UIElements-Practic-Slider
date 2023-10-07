@@ -2,12 +2,17 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 
+[RequireComponent(typeof(HealthRendering))]
 public class Player : MonoBehaviour
 {
     [SerializeField] private float _health;
 
+    private UnityEvent _addHealth;
+    private UnityEvent _takeHealth;
+    private HealthRendering _healthRendering;
     private int _maxHealth = 100;
     private int _minHealth = 0;
+    private int _damage = 10;
 
     public float Health => _health;
     public int MaxHealth => _maxHealth;
@@ -15,23 +20,27 @@ public class Player : MonoBehaviour
 
     private void Start()
     {
+        _healthRendering = GetComponent<HealthRendering>();
         _health = _maxHealth;
     }
 
-    public void TakeHealth(int value)
+    public void TakeHealth()
     {
         if (_health > _minHealth)
         {
-            _health -= value;
+            _health -= _damage;
         }
 
+        StartCoroutine(_healthRendering.DrawHealth(-_damage));
     }
 
-    public void AddHealth(int value)
+    public void AddHealth()
     {
         if (_health < _maxHealth)
         {
-            _health += value;
+            _health += _damage;
         }
+
+        StartCoroutine(_healthRendering.DrawHealth(_damage));
     }
 }

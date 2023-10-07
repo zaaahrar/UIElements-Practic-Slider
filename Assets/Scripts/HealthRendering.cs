@@ -8,10 +8,13 @@ public class HealthRendering : MonoBehaviour
 {
     [SerializeField] private Slider _sliderHealth;
     [SerializeField] private TMP_Text _healthText;
+    [SerializeField] private Button _buttonAddHealth;
+    [SerializeField] private Button _buttonTakeHalth;
 
     private float _imaginaryHealth;
     private float _maxDelta = 10;
     private Player _player;
+    private float _finalHealth;
 
     private void Start()
     {
@@ -30,11 +33,13 @@ public class HealthRendering : MonoBehaviour
         _healthText.text = $"Î×ÊÈ ÆÈÇÍÈ: {((int)_imaginaryHealth)}";
     }
 
-    public IEnumerator DrawHealth(float finalHealth)
+    public IEnumerator DrawHealth(int damage)
     {
-        while (_imaginaryHealth != finalHealth)
+        _finalHealth = _imaginaryHealth + damage;
+
+        while (_imaginaryHealth != _finalHealth)
         {
-            _imaginaryHealth = Mathf.MoveTowards(_imaginaryHealth, finalHealth, _maxDelta * Time.deltaTime);
+            _imaginaryHealth = Mathf.MoveTowards(_imaginaryHealth, _finalHealth , _maxDelta * Time.deltaTime);
             UpdateUIElements();
 
             yield return null;
