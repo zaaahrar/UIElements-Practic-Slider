@@ -2,14 +2,10 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 
-[RequireComponent(typeof(HealthBar))]
 public class Player : MonoBehaviour
 {
     [SerializeField] private float _health;
 
-    private UnityEvent _addHealth;
-    private UnityEvent _takeHealth;
-    private HealthBar _healthRendering;
     private int _maxHealth = 100;
     private int _minHealth = 0;
     private int _damage = 10;
@@ -21,7 +17,6 @@ public class Player : MonoBehaviour
 
     private void Start()
     {
-        _healthRendering = GetComponent<HealthBar>();
         _health = _maxHealth;
     }
 
