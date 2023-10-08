@@ -2,26 +2,38 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 
+[RequireComponent(typeof(HealthBar))]
 public class Player : MonoBehaviour
 {
     [SerializeField] private float _health;
 
     private int _maxHealth = 100;
     private int _minHealth = 0;
-    private int _damage = 10;
+    private int _stepHealth = 10;
 
-    public int Damage => _damage;
-    public float Health => _health;
-    public int MaxHealth => _maxHealth;
-    public int MinHealth => _minHealth;
+    private HealthBar _healthBar;
 
     private void Start()
     {
+        _healthBar = GetComponent<HealthBar>();
         _health = _maxHealth;
     }
 
-    public void ChangeHealth(int value)
+    public void AddHealth()
     {
-        _health += value;
+        if(_health < _maxHealth)
+        {
+            _health += _stepHealth;
+            _healthBar.DrawAddedHealth(_health);
+        }
+    }
+
+    public void TakeHealth()
+    {
+        if(_health > _minHealth)
+        {
+            _health -= _stepHealth;
+            _healthBar.DrawTakeHealth(_health);
+        }
     }
 }
