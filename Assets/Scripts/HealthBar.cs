@@ -3,28 +3,35 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+[RequireComponent(typeof(Player))]
 public class HealthBar : MonoBehaviour
 {
     [SerializeField] private Slider _sliderHealth;
     [SerializeField] private TMP_Text _healthText;
 
+    private Player _player;
     private float _imaginaryHealth = 100;
     private float _maxDelta = 10;
     private float _finalHealth;
 
-    private void Start()
+    private void Awake()
     {
         _sliderHealth.maxValue = _imaginaryHealth;
+        _player = GetComponent<Player>();
         UpdateUIElements();
     }
 
-    public void DrawAddedHealth(float health)
+    private void OnEnable()
     {
-        _finalHealth = health;
-        StartCoroutine(DrawHealth());
+        _player.ChangingHealth += DrawHealthAction; 
     }
 
-    public void DrawTakeHealth(float health)
+    private void OnDisable()
+    {
+        _player.ChangingHealth -= DrawHealthAction;
+    }
+
+    public void DrawHealthAction(float health)
     {
         _finalHealth = health;
         StartCoroutine(DrawHealth());
